@@ -39,9 +39,13 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@bulatdashiev/svelte-slider": "^1.0.3",
 		"@sveltejs/adapter-cloudflare": "^2.3.3",
+		"@turf/turf": "^6.5.0",
 		"d3": "^7.8.5",
 		"d3-comparator": "^0.1.0",
-		"dayjs": "^1.11.10"
+		"dayjs": "^1.11.10",
+		"numeral": "^2.0.6",
+		"svelte-maplibre": "^0.5.0"
 	}
 }

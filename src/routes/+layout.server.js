@@ -9,10 +9,10 @@ export async function load() {
         errors:[]
     };
 
-    await d3.csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vRV7Ueb_fE9y9s1shjs5_QcrlLyvhIq6HC-vzqgIibNr17pvt_xSpJPyaM3a-9iaKOExjqqbfNYxRBC/pub?gid=546665090&single=true&output=csv')
+    await d3.csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vRV7Ueb_fE9y9s1shjs5_QcrlLyvhIq6HC-vzqgIibNr17pvt_xSpJPyaM3a-9iaKOExjqqbfNYxRBC/pub?gid=546665090&single=true&output=csv&t'+(+new Date()))
         .then(res=>{
 
-            console.log('res', res);
+            // console.log('res', res);
             data.raw = res;
         })
         .catch(e=>{
@@ -20,7 +20,7 @@ export async function load() {
             console.warn(e);
             data.errors.push('gsheet load error')
 
-        })
+        });
 
     return data;
 }
