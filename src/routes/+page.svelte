@@ -304,15 +304,49 @@
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
           </svg>`;
 
+
+
+
+	const ogtitle = "og:title";
+	const ogimage= "og:image";
+	const ogdescription = "og:description";
+
+	const ogtitleValue = "mariejualkondo";
+	const ogPageTitle = 'Klang Valley Residential Property. ';
+	const ogdescriptionValue = "Data visualization on Klang Valley residential property showcasing geographical locations on the map with 3D buildings to various pricing metrics using beeswarm plots such as distance from KLCC, pricing patterns, square footage, number of rooms, and anticipated completion date";
+	const ogKeywords = 'Klang Valley, residential, property, mariejualkondo, ';
+	const ogScreenshot = 'https://mariejualkondo.pages.dev/klang_valley_residential_property.png';
+
 </script>
 
 
 
 <svelte:head>
-    <link type="text/css" rel="stylesheet" href="https://libjs.pages.dev/font/b612/b612.css"/>
+
+
+<!-- Title: Aim for 50-60 characters -->
+<title>Klang Valley Residential Property Visualization | In-depth Property Overview</title>
+<meta name="apple-mobile-web-app-title" 	                    content="Klang Valley Residential Property Visualization | In-depth Property Overview"/>
+<meta itemprop="name" property={ogtitle} name="twitter:title" content="Klang Valley Residential Property Visualization | In-depth Property Overview" />
+
+<!-- Meta Description: Aim for 150-160 characters -->
+<meta name="description"        content="Explore an in-depth visualization of residential properties in Klang Valley. Discover project locations, trends, and insights with our interactive map and charts. Ideal for homebuyers and investors alike.">
+<meta itemprop="description" 		property={ogdescription} name="twitter:description" content="Explore an in-depth visualization of residential properties in Klang Valley. Discover project locations, trends, and insights with our interactive map and charts. Ideal for homebuyers and investors alike."/>
+
+<!-- Meta Keywords: Aim for relevancy rather than volume -->
+<meta name="keywords" content="Klang Valley property, Malaysia real estate visualization, residential property insights, Klang Valley housing trends, interactive property map, home buying guide Klang Valley">
+
+<!-- Open Graph Protocol: Enhances the look of the link when shared on social media platforms like Facebook -->
+<meta property="og:title" content="Klang Valley Residential Property Visualization | In-depth Property Overview">
+<meta property="og:description" content="Explore an in-depth visualization of residential properties in Klang Valley. Discover project locations, trends, and insights with our interactive map and charts. Ideal for homebuyers and investors alike.">
+<meta property="og:image" content="{ogScreenshot}">
+<meta property="og:url" content="{ogScreenshot}">
+
+<meta itemprop="image" property={ogimage} name="twitter:image" content={ogScreenshot}/>
+<link rel="icon" type="image/x-icon" href={ogScreenshot}>
+
+
 </svelte:head>
-
-
 
 
 <style>
