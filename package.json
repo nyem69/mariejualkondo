@@ -46,6 +46,7 @@
 		"d3-comparator": "^0.1.0",
 		"dayjs": "^1.11.10",
 		"just-flush": "^2.3.0",
+		"maplibre-gl": "^3.5.0",
 		"moment": "^2.29.4",
 		"numeral": "^2.0.6",
 		"svelte-maplibre": "^0.5.0"

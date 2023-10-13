@@ -26,6 +26,9 @@ dependencies:
   just-flush:
     specifier: ^2.3.0
     version: 2.3.0
+  maplibre-gl:
+    specifier: ^3.5.0
+    version: 3.5.0
   moment:
     specifier: ^2.29.4
     version: 2.29.4
