@@ -324,7 +324,7 @@
 
 
 
-<div class="md:m-8 lg:m-12 xl:m-16 w-full" style="min-height:3000px">
+<div class="md:m-8 lg:m-12 xl:m-16 w-full min-w-md" style="min-height:3000px">
 
     <div class="m-4">
 
