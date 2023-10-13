@@ -23,6 +23,9 @@ dependencies:
   dayjs:
     specifier: ^1.11.10
     version: 1.11.10
+  just-flush:
+    specifier: ^2.3.0
+    version: 2.3.0
   moment:
     specifier: ^2.29.4
     version: 2.29.4
