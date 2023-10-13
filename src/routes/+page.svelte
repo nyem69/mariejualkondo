@@ -6,12 +6,7 @@
 
   import * as d3 from 'd3';
 	import * as turf from '@turf/turf';
-  import * as numeral from 'numeral';
 
-  let comma = d3.format(','),
-      f1 = d3.format('.1f'),
-      f2 = d3.format('.2f'),
-      f3 = d3.format('.3f');
 
   const klcc = [101.7116455, 3.1574917];
   const geojson_klcc = turf.point(klcc);
@@ -21,6 +16,7 @@
     _price: 'Price',
     _price_psf2: 'Price per sf',
     _size: 'Size',
+    _room: 'Rooms',
   };
 
 
@@ -101,6 +97,15 @@
         }
 
       }
+
+      //--------------------------
+      // room
+      //--------------------------
+      p._room  = d['Rooms'];
+      p._room = p._room.replace(/\(.*?\)/,'').trim();
+      p._room = p._room.replace(/\s+\d+bathtub/i,'').trim();
+      p._room = p._room.replace(/\s+/g,'').trim();
+      p._room = p._room.replace(/R\+/,'R').trim();
 
       //--------------------------
       // Price
@@ -215,12 +220,11 @@
 
   import Panel_Maplibre from '$lib/panels/Panel_Maplibre.svelte';
   import Panel_Beeswarms from '$lib/panels/Panel_Beeswarms.svelte';
+  import Panel_Beeswarms_Scaleband from '$lib/panels/Panel_Beeswarms_Scaleband.svelte';
+  import Panel_Table from '$lib/panels/Panel_Table.svelte';
 
 
-  import { Alert, Button, Badge } from 'flowbite-svelte';
-
-
-  import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Checkbox, TableSearch } from 'flowbite-svelte';
+  import { Button, Popover } from 'flowbite-svelte';
 
 
 
@@ -231,36 +235,23 @@
   // filters
   //---------------------------
 
-  $: console.log('$M.filters', $M.filters)
 
-  // function _filter(d) {
-  //   let tf = true;
-  //   for (let i in $M.filters) {
-  //     if (tf){
-  //       tf = d[i] >= $M.filters[i][0] && d[i] <= $M.filters[i][1];
-  //     }
-  //   }
-  //   return tf;
-  // }
 
   $: rows = rows.map(d=>{
-      // d.active = _filter(d);
       d.active = true;
       for (let i in $M.filters) {
         if (d.active){
-          d.active = d[i] >= $M.filters[i][0] && d[i] <= $M.filters[i][1];
+          if (i=='_room') {
+            d.active = $M.filters[i].includes(d[i]);
+          }else {
+            d.active = d[i] >= $M.filters[i][0] && d[i] <= $M.filters[i][1];
+          }
         }
       }
-
       return d;
-
-      // console.log(d._index, d.active)
     })
 
   $: tableRows = rows.filter(d=>d.active);
-
-  $: console.log('tableRows.length', tableRows.length)
-
 
 
 </script>
@@ -268,15 +259,34 @@
 
 
 
-
+<!--
+  filters
+-->
 <div class="flex flex-wrap gap-1 m-4 min-h-[50px]">
   {#each Object.entries($M.filters) as d}
-    {#if d[1][0]!=$M.defaultState[d[0]][0] || d[1][1]!=$M.defaultState[d[0]][1]}
-      <Button color="light">
-        { filterLabels[d[0]] ? filterLabels[d[0]] : d[0].split('_').filter(d=>d).join(' ')} :
-        { Math.floor(d[1][0]) } -
-        { Math.ceil(d[1][1]) }
-      </Button>
+    {#if ['_room'].includes(d[0])}
+      {#if $M.defaultState[d[0]].join('-')!=d[1].join('-')}
+        <Button class="bg-[#E485A5]"
+          on:click={()=>{
+            $M.filters[d[0]] = $M.defaultState[d[0]];
+          }}
+        >
+          { filterLabels[d[0]] ? filterLabels[d[0]] : d[0].split('_').filter(d=>d).join(' ')} :
+          { d[1].join(', ') }
+        </Button>
+      {/if}
+    {:else}
+      {#if d[1][0]!=$M.defaultState[d[0]][0] || d[1][1]!=$M.defaultState[d[0]][1]}
+        <Button class="bg-[#E485A5]"
+          on:click={()=>{
+            $M.filters[d[0]] = $M.defaultState[d[0]];
+          }}
+        >
+          { filterLabels[d[0]] ? filterLabels[d[0]] : d[0].split('_').filter(d=>d).join(' ')} :
+          { Math.floor(d[1][0]) } -
+          { Math.ceil(d[1][1]) }
+        </Button>
+      {/if}
     {/if}
   {/each}
 </div>
@@ -286,58 +296,43 @@
 <div class="flex m-4 flex-wrap-reverse">
 
   <div class="flex-1 max-w-2xl">
+
+
+
+
+    <!--
+      map
+    -->
+
+
+
     <div>
+      <div class="flex">
+        <div class="flex-1 font-semibold text-sm text-left pl-8">Location Map</div>
+      </div>
       <Panel_Maplibre {data}/>
+      <div class="text-xs mt-2 mb-4">The map displays approximate locations of selected residential housing projects currently under development. Please note that the positions are estimated and for reference purposes only. Actual locations may vary</div>
     </div>
 
 
-    <div>
 
-      <Table class="min-h-[1000px]">
-        <TableHead>
-          <TableHeadCell>Project</TableHeadCell>
-          <TableHeadCell>Location</TableHeadCell>
-          <TableHeadCell>Rooms</TableHeadCell>
-          <TableHeadCell>Size</TableHeadCell>
-          <TableHeadCell>Size (sf)</TableHeadCell>
-          <TableHeadCell>Dimension</TableHeadCell>
-          <TableHeadCell>Remarks</TableHeadCell>
-          <TableHeadCell>Price</TableHeadCell>
-          <TableHeadCell>Price</TableHeadCell>
-          <TableHeadCell>Price (psf x size) </TableHeadCell>
-          <TableHeadCell>Price (psf)</TableHeadCell>
-          <TableHeadCell>Price (psf)</TableHeadCell>
-          <TableHeadCell>Distace from KLCC (km)</TableHeadCell>
-        </TableHead>
-        <TableBody>
-          {#each tableRows as d}
-            <TableBodyRow>
-              <TableBodyCell>{d['Project']||''}</TableBodyCell>
-              <TableBodyCell>{d['Location']||''}</TableBodyCell>
-              <TableBodyCell>{d['Rooms']||''}</TableBodyCell>
-              <TableBodyCell>{d['Size']||''}</TableBodyCell>
-              <TableBodyCell>{d['_size']||''}</TableBodyCell>
-              <TableBodyCell>{d['_dimension']||''}</TableBodyCell>
-              <TableBodyCell>{d['Rooms Remarks']||''}</TableBodyCell>
-              <TableBodyCell>{d['Price']||''}</TableBodyCell>
-              <TableBodyCell>{
-                d['_price'] ? d['_price'] : ''
-              }</TableBodyCell>
-              <TableBodyCell>{
-                d['_price_from_psf'] ? d['_price_from_psf'] : ''
-              }</TableBodyCell>
 
-              <TableBodyCell>{d['_price_psf']||''}</TableBodyCell>
-              <TableBodyCell>{d['_price_psf2']||''}</TableBodyCell>
-              <TableBodyCell class="text-right">{d['_distance_from_klcc'] ? f1(d['_distance_from_klcc'])+'km' : ''}</TableBodyCell>
-            </TableBodyRow>
-          {/each}
-        </TableBody>
-      </Table>
+
+    <!--
+      table listing
+    -->
+    <div class="min-h-[1000px]">
+      <Panel_Table {tableRows}/>
     </div>
 
   </div>
 
+
+
+
+  <!--
+    beeswarm brush
+  -->
   <div class="flex-1">
 
     <div class="flex justify-center items-stretch flex-wrap" style="flex-wrap:wrap;">
@@ -370,6 +365,32 @@
           {rows}
           {tableRows}/>
 
+        <Panel_Beeswarms_Scaleband
+          title={"Rooms"}
+          key={'_room'}
+          xAxisLabel={"Rooms"}
+          sortOrder={[
+            "",
+            "Studio",
+            "1+1R1B",
+            "1R1B",
+            "2R",
+            "2R1B",
+            "2R2B",
+            "2+1R2B",
+            "3R2B",
+            "3R12B",
+            "3R2+1B",
+            "3+1R2B",
+            "4+1R&5+1B",
+            "4R2B",
+            "4R3B",
+            "4R4B",
+            "5R6B"
+          ]}
+          {rows}
+          {tableRows}/>
+
     </div>
 
 
@@ -378,4 +399,29 @@
 
 
 
+</div>
+
+
+<div>
+  {#each rows as d}
+    <Popover triggeredBy=".node-{d._index}" offset="30" class="text-sm font-light m-4" defaultClass="">
+      <div class="m-4">
+        <table>
+          <tr><td class="opacity-50 pr-2">Project</td><td>{d['Project']||''}</td></tr>
+          <tr><td class="opacity-50 pr-2">Location</td><td>{d['Location']||''}</td></tr>
+          <tr><td class="opacity-50 pr-2">Rooms</td><td>{d['Rooms']||''}</td></tr>
+          <tr><td class="opacity-50 pr-2">Size</td><td>{d['Size']||''}</td></tr>
+          {#if d['Rooms Remarks']}
+            <tr><td class="opacity-50 pr-2">Remarks</td><td>{d['Rooms Remarks']||''}</td></tr>
+          {/if}
+          <tr><td class="opacity-50 pr-2">Price</td><td>{d['Price']||''}</td></tr>
+          <tr><td class="opacity-50 pr-2">Completion</td><td>{d['Completion']||''}</td></tr>
+          {#if d['Link_URL']}
+            <tr><td class="opacity-50 pr-2">Enquire</td><td><a href="{d['Link_URL']}" target="_blank">{d['Link']||''}</a></td></tr>
+          {/if}
+        </table>
+
+      </div>
+    </Popover>
+  {/each}
 </div>

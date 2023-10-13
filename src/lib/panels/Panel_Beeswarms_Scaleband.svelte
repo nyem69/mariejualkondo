@@ -1,21 +1,24 @@
 <script>
 
+
+
   export let title;
   export let key;
   export let xAxisLabel;
   export let rows;
   export let tableRows;
+  export let sortOrder;
 
   import * as d3 from 'd3';
+  import d3comparator from '$lib/d3comparator.js';
 
-  let comma = d3.format(',');
 
 
   //---------------------------
   // datum
   //---------------------------
 
-  let datum = rows.filter(d=>d[key] && d[key]>0).map(d=>{
+  let datum = rows.map(d=>{
     let k = {...d};
     k.value = d[key];
     return k;
@@ -33,17 +36,45 @@
 
 
 
+  let rooms = d3.groups(datum, d=>d[key]).map(d=>{
+    return {
+      key: d[0],
+      values: d[1]
+    }
+  }).sort(
+    sortOrder.length
+      ? d3comparator()
+          .order(d3.ascending,d=>sortOrder.indexOf(d.key))
+      : d3comparator()
+          .order(d3.ascending,d=>d.key==''?0:1)
+          .order(d3.ascending,d=>d.key=='Studio'?0:1)
+          .order(d3.ascending,d=>d.key)
+          .order()
+  )
+
+  // $: console.log('sortOrder',sortOrder);
+
+  $: filteredRooms = d3.groups(tableRows, d=>d[key]).map(d=>d[0])
+      .sort(
+        sortOrder.length
+          ? d3comparator()
+              .order(d3.ascending,d=>sortOrder.indexOf(d))
+          : d3comparator()
+              .order(d3.ascending,d=>d.key==''?0:1)
+              .order(d3.ascending,d=>d.key=='Studio'?0:1)
+              .order(d3.ascending,d=>d.key)
+              .order()
+      );
+
+  // $: console.log('filteredRooms',filteredRooms);
 
 
-  let _extent = d3.extent(datum, d=>d[key]);
-  let minRange = _extent[0];
-  let maxRange = _extent[1];
+  // let maxRange = rooms.slice(-1).map(d=>d.key);
+  $M.defaultState[key] = rooms.map(d=>d.key);
 
-  $M.defaultState[key] = [0,maxRange];
+  const xScale = d3.scaleBand(rooms.map(d=>d.key), [0, beewidth]);
 
-  let xScale = d3.scaleLinear()
-        .domain([0,  Math.ceil(maxRange/10)*10])
-        .range([margin.left, beewidth - margin.right]);
+
 
   let xAxis = d3.axisBottom(xScale)
                   .ticks(5)
@@ -56,8 +87,8 @@
 
   let brush = d3.brushX()
       .extent([
-        [margin.left, margin.top],
-        [beewidth - margin.right, beeheight - margin.bottom]
+        [0, 0],
+        [beewidth, beeheight - 20]
       ])
       .on("brush end", brushed);
 
@@ -83,15 +114,15 @@
     svg.select('.x-axis')
         .call(xAxis)
         .call(sel=>{
-          sel.selectAll('text') .attr('fill','#999999');
+          sel.selectAll('text') .attr('fill','#999999')
+            // .attr('text-anchor','end')
+            .attr('transform','translate(-100,15) rotate(-20)');
           sel.selectAll('.tick line').attr('stroke', '#99999940');
           sel.selectAll('path.domain').attr('stroke', 'none');
         });
 
 
     nodes = svg.selectAll('.nodes').data([1])
-      .join('g').attr('class','nodes')
-        .attr('transform',`translate(0, ${margin.top})`)
             .selectAll(".node").data(datum, d=>d._index)
                 .join('circle')
                     .attr("class", d=>'node-'+d._index)
@@ -125,10 +156,8 @@
   function brushed(event) {
     if (event.selection) {
 
-      let ranges = event.selection.map((d,i) => {
-        return i==0 ? Math.floor(xScale.invert(d))
-                    : Math.ceil(xScale.invert(d))
-      });
+
+      let ranges = rooms.filter(d=>xScale(d.key) >= event.selection[0] && xScale(d.key) <= event.selection[1] ).map(d=>d.key);
 
       if (timer) {
         clearTimeout(timer);
@@ -139,7 +168,7 @@
       },5);
 
     }else {
-      $M.filters[ key ] = [0, maxRange];
+      $M.filters[ key ] = $M.defaultState[key];
     }
   }
 
@@ -158,14 +187,15 @@
 </script>
 
 
-<div class="Panel_Beeswarms[{key}] flex-1 mt-1" style="min-width:400px; max-heigth:300px;">
+
+<div class="Panel_Rooms[{key}] flex-1 mt-1" style="min-width:400px; max-heigth:300px;">
   <div class="flex">
     <div class="flex-1 font-semibold text-sm text-left pl-8">{title}</div>
-    <div class="flex-1 text-xs text-right">{$M.filters[key] ? $M.filters[key].map((d,i)=>comma(i==0?Math.floor(d):Math.ceil(d))).join(' - ') : ''}</div>
+    <div class="flex text-xs text-right">{filteredRooms.join(', ')}</div>
   </div>
   <svg class="w-full" bind:this={el} viewBox="0 0 {beewidth+margin.left+margin.right} {beeheight+margin.top+margin.bottom}">
 
-      <g class="x-axis" transform="translate(0, {margin.top})" pointer-events="none"></g>
+      <g class="x-axis" transform="translate({margin.left}, {margin.top})" pointer-events="none"></g>
 
       {#if xAxisLabel}
         <g transform="translate({((beewidth+margin.left)/2)}, {beeheight + margin.top + 5})" pointer-events="none">
@@ -173,8 +203,13 @@
         </g>
       {/if}
 
-      <g class="brush"></g>
-      <g class="nodes" transform="translate(0, {margin.top})"></g>
+      <g transform="translate({margin.left}, {margin.top})">
+        <g class="brush"></g>
+        <g class="nodes"></g>
+      </g>
+
   </svg>
 </div>
+
+
 
