@@ -158,10 +158,10 @@
 </script>
 
 
-<div class="Panel_Beeswarms[{key}] flex-1 mt-4 mb-4" style="min-width:400px; max-heigth:300px;">
+<!-- <div class="Panel_Beeswarms[{key}] flex-1 mt-4 mb-4" style="min-width:400px; max-heigth:300px;"> -->
+<div class="Panel_Beeswarms[{key}] flex-1 min-w-[300px] aspect-[9/16] max-h-[70vh] sm:max-h-full sm:aspect-video mb-8">
   <div class="flex">
     <div class="flex-1 font-semibold text-sm text-left pl-8">{title}</div>
-    <div class="flex-1 text-xs text-right">{$M.filters[key] ? $M.filters[key].map((d,i)=>comma(i==0?Math.floor(d):Math.ceil(d))).join(' - ') : ''}</div>
   </div>
   <svg class="w-full" bind:this={el} viewBox="0 0 {beewidth+margin.left+margin.right} {beeheight+margin.top+margin.bottom}">
 
@@ -178,7 +178,7 @@
   </svg>
 
 
-    <div class="text-xs text-center">{$M.filters[key] ? $M.filters[key].map((d,i)=>comma(i==0?Math.floor(d):Math.ceil(d))).join(' - ') : ''}</div>
+    <div class="text-xs text-center">{$M.filters[key] ? $M.filters[key].map((d,i)=>comma(i==0?Math.floor(d):Math.ceil(d))).join(' ~ ') : ''}</div>
 
 </div>
 
