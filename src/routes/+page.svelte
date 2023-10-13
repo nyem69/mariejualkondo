@@ -325,7 +325,7 @@
   }
 </style>
 
-<div class="m-10" style="min-height:3000px">
+<div class="m-4 md:m-8 lg:m-12 xl:m-16" style="min-height:3000px">
     <h1 class="font-semibold text-3xl mb-4">Klang Valley Residential Property Overview</h1>
 
     <div class="flex flex-wrap">
@@ -404,7 +404,7 @@
 
 
 
-  <div class="flex m-4 flex-wrap-reverse">
+  <div class="flex flex-wrap-reverse">
 
     <div class="flex-1 max-w-2xl">
 

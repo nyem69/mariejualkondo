@@ -159,7 +159,7 @@
 
 
 <!-- <div class="Panel_Beeswarms[{key}] flex-1 mt-4 mb-4" style="min-width:400px; max-heigth:300px;"> -->
-<div class="Panel_Beeswarms[{key}] flex-1 min-w-[300px] aspect-[9/16] max-h-[70vh] sm:max-h-full sm:aspect-video mb-8">
+<div class="Panel_Beeswarms[{key}] flex-1 min-w-[300px] sm:w-full mb-8">
   <div class="flex">
     <div class="flex-1 font-semibold text-sm text-left pl-8">{title}</div>
   </div>
