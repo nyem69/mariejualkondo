@@ -209,7 +209,7 @@
 
   </svg>
   <div class="flex">
-    <div class="flex text-xs text-center">{filteredRooms.join(', ')}</div>
+    <div class="flex-1 text-xs text-center">{filteredRooms.join(', ')}</div>
   </div>
 
 </div>
