@@ -409,7 +409,7 @@
 
   <div class="flex flex-wrap-reverse">
 
-    <div class="flex-1 max-w-2xl">
+    <div class="flex-1 max-w-md">
 
 
 
@@ -420,7 +420,7 @@
 
 
 
-      <div class="mb-4">
+      <div class="mb-4 max-w-md">
         <div class="flex">
           <div class="flex-1 font-semibold text-sm text-left pl-8">Location Map</div>
         </div>
@@ -436,7 +436,7 @@
       <!--
         table listing
       -->
-      <div class="max-w-md max-h-[70vh] sm:overflow-x-hidden">
+      <div class=" max-w-md max-h-[70vh] sm:overflow-x-hidden">
         <Panel_Table {tableRows}/>
       </div>
 
