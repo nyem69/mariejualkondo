@@ -1,5 +1,7 @@
 <script>
 
+
+
   export let title;
   export let key;
   export let xAxisLabel;
@@ -7,19 +9,21 @@
   export let tableRows;
 
   import * as d3 from 'd3';
-
-  let comma = d3.format(',');
+  import d3comparator from '$lib/d3comparator.js';
+  import moment from 'moment';
 
 
   //---------------------------
   // datum
   //---------------------------
 
-  let datum = rows.filter(d=>d[key] && d[key]>0).map(d=>{
-    let k = {...d};
-    k.value = d[key];
-    return k;
-  })
+  let datum = rows
+                .filter(d=>d[key])
+                .map(d=>{
+                  let k = {...d};
+                  k.value = new Date(d[key]);
+                  return k;
+                })
 
 
   const beewidth = 500;
@@ -33,31 +37,34 @@
 
 
 
+  let _dates = datum.map(d=>d.value);
+  let _extent = d3.extent(_dates);
+  // let minRange = _extent[0];
+  // let maxRange = _extent[1];
 
+  // let maxRange = rooms.slice(-1).map(d=>d.key);
+  $M.defaultState[key] = _extent;
 
-  let _extent = d3.extent(datum, d=>d.value);
-  let minRange = _extent[0];
-  let maxRange = _extent[1];
+  // const xScale = d3.scaleBand(rooms.map(d=>d.key), [0, beewidth]);
+  const xScale = d3.scaleTime()
+                  .domain(_extent)
+                  .range([0, beewidth]);
 
-  $M.defaultState[key] = [0,maxRange];
-
-  let xScale = d3.scaleLinear()
-        .domain([0,  Math.ceil(maxRange/10)*10])
-        .range([margin.left, beewidth - margin.right]);
+  // console.log('xScale', xScale.domain());
 
   let xAxis = d3.axisBottom(xScale)
                   .ticks(5)
                   .tickSize(beeheight - margin.top - margin.bottom);
 
   let simulation = d3.forceSimulation(datum)
-        .force("x", d3.forceX(d => xScale(d[key])).strength(1))
+        .force("x", d3.forceX(d => xScale(d.value)).strength(1))
         .force("y", d3.forceY( (beeheight - margin.bottom - margin.top) / 2))
         .force("collide", d3.forceCollide(5));
 
   let brush = d3.brushX()
       .extent([
-        [margin.left, margin.top],
-        [beewidth - margin.right, beeheight - margin.bottom]
+        [0, 0],
+        [beewidth, beeheight - 20]
       ])
       .on("brush end", brushed);
 
@@ -83,15 +90,15 @@
     svg.select('.x-axis')
         .call(xAxis)
         .call(sel=>{
-          sel.selectAll('text') .attr('fill','#999999');
+          sel.selectAll('text') .attr('fill','#999999')
+            // .attr('text-anchor','end')
+            // .attr('transform','translate(-100,15) rotate(-20)');
           sel.selectAll('.tick line').attr('stroke', '#99999940');
           sel.selectAll('path.domain').attr('stroke', 'none');
         });
 
 
     nodes = svg.selectAll('.nodes').data([1])
-      .join('g').attr('class','nodes')
-        .attr('transform',`translate(0, ${margin.top})`)
             .selectAll(".node").data(datum, d=>d._index)
                 .join('circle')
                     .attr("class", d=>'node-'+d._index)
@@ -125,10 +132,14 @@
   function brushed(event) {
     if (event.selection) {
 
+
+      // let ranges = rooms.filter(d=>xScale(d.key) >= event.selection[0] && xScale(d.key) <= event.selection[1] ).map(d=>d.key);
+
       let ranges = event.selection.map((d,i) => {
         return i==0 ? Math.floor(xScale.invert(d))
                     : Math.ceil(xScale.invert(d))
       });
+
 
       if (timer) {
         clearTimeout(timer);
@@ -139,7 +150,7 @@
       },5);
 
     }else {
-      $M.filters[ key ] = [0, maxRange];
+      $M.filters[ key ] = $M.defaultState[key];
     }
   }
 
@@ -158,14 +169,14 @@
 </script>
 
 
-<div class="Panel_Beeswarms[{key}] flex-1 mt-4 mb-4" style="min-width:400px; max-heigth:300px;">
+
+<div class="Panel_Rooms[{key}] flex-1 mt-4 mb-4" style="min-width:400px; max-heigth:300px;">
   <div class="flex">
     <div class="flex-1 font-semibold text-sm text-left pl-8">{title}</div>
-    <div class="flex-1 text-xs text-right">{$M.filters[key] ? $M.filters[key].map((d,i)=>comma(i==0?Math.floor(d):Math.ceil(d))).join(' - ') : ''}</div>
   </div>
   <svg class="w-full" bind:this={el} viewBox="0 0 {beewidth+margin.left+margin.right} {beeheight+margin.top+margin.bottom}">
 
-      <g class="x-axis" transform="translate(0, {margin.top})" pointer-events="none"></g>
+      <g class="x-axis" transform="translate({margin.left}, {margin.top})" pointer-events="none"></g>
 
       {#if xAxisLabel}
         <g transform="translate({((beewidth+margin.left)/2)}, {beeheight + margin.top + 5})" pointer-events="none">
@@ -173,12 +184,18 @@
         </g>
       {/if}
 
-      <g class="brush"></g>
-      <g class="nodes" transform="translate(0, {margin.top})"></g>
+      <g transform="translate({margin.left}, {margin.top})">
+        <g class="brush"></g>
+        <g class="nodes"></g>
+      </g>
+
   </svg>
 
-
-    <div class="text-xs text-center">{$M.filters[key] ? $M.filters[key].map((d,i)=>comma(i==0?Math.floor(d):Math.ceil(d))).join(' - ') : ''}</div>
+  <div class="flex">
+    <div class="flex-1 text-xs text-center">{$M.filters[key] ? $M.filters[key].map((d,i)=>moment(d).format('YYYY')+' Q'+moment(d).format('Q')).join(' - ') : ''}</div>
+  </div>
 
 </div>
+
+
 

@@ -2,10 +2,14 @@
 
   export let data;
 
-  console.log('data', data);
+  // console.log('data', data);
 
   import * as d3 from 'd3';
 	import * as turf from '@turf/turf';
+  import moment from 'moment';
+
+  let z2 = d3.format('02d');
+
 
 
   const klcc = [101.7116455, 3.1574917];
@@ -17,6 +21,7 @@
     _price_psf2: 'Price per sf',
     _size: 'Size',
     _room: 'Rooms',
+    _completion_date: 'Completion Date',
   };
 
 
@@ -184,12 +189,25 @@
           year : +completion[1],
           quarter: +completion[2],
         }
+        if (p._completion.quarter==1){
+          p._completion_date = p._completion.year +'-01-01';
+        }else if (p._completion.quarter==2){
+          p._completion_date = p._completion.year +'-04-01';
+        }else if (p._completion.quarter==3){
+          p._completion_date = p._completion.year +'-07-01';
+        }else if (p._completion.quarter==4){
+          p._completion_date = p._completion.year +'-10-01';
+        }else {
+          p._completion_date = p._completion.year +'-07-01';
+        }
+
       }else {
         let c2 = p['Completion'].match(/(\d+)/);
         if (c2) {
           p._completion = {
             year : +c2[1],
           }
+          p._completion_date = p._completion.year +'-07-01';
         }
       }
 
@@ -206,7 +224,7 @@
 
   })
 
-  console.log('rows', rows);
+  // console.log('rows', rows);
 
   rows.forEach((d,i)=>{
     d.active = true;
@@ -221,6 +239,7 @@
   import Panel_Maplibre from '$lib/panels/Panel_Maplibre.svelte';
   import Panel_Beeswarms from '$lib/panels/Panel_Beeswarms.svelte';
   import Panel_Beeswarms_Scaleband from '$lib/panels/Panel_Beeswarms_Scaleband.svelte';
+  import Panel_Beeswarms_Timeline from '$lib/panels/Panel_Beeswarms_Timeline.svelte';
   import Panel_Table from '$lib/panels/Panel_Table.svelte';
 
 
@@ -235,14 +254,16 @@
   // filters
   //---------------------------
 
-
+  // $: console.log('$M.filters[_completion_date]', $M.filters['_completion_date']);
 
   $: rows = rows.map(d=>{
       d.active = true;
       for (let i in $M.filters) {
         if (d.active){
-          if (i=='_room') {
+          if (['_room'].includes(i)) {
             d.active = $M.filters[i].includes(d[i]);
+          }else if (['_completion_date'].includes(i)) {
+            d.active = +new Date(d[i]) >= +$M.filters[i][0] && +new Date(d[i]) <= +$M.filters[i][1];
           }else {
             d.active = d[i] >= $M.filters[i][0] && d[i] <= $M.filters[i][1];
           }
@@ -264,7 +285,9 @@
 -->
 <div class="flex flex-wrap gap-1 m-4 min-h-[50px]">
   {#each Object.entries($M.filters) as d}
+
     {#if ['_room'].includes(d[0])}
+
       {#if $M.defaultState[d[0]].join('-')!=d[1].join('-')}
         <Button class="bg-[#E485A5]"
           on:click={()=>{
@@ -275,6 +298,20 @@
           { d[1].join(', ') }
         </Button>
       {/if}
+
+    {:else if ['_completion_date'].includes(d[0])}
+
+      {#if $M.defaultState[d[0]].join('-')!=d[1].join('-')}
+        <Button class="bg-[#E485A5]"
+          on:click={()=>{
+            $M.filters[d[0]] = $M.defaultState[d[0]];
+          }}
+        >
+          { filterLabels[d[0]] ? filterLabels[d[0]] : d[0].split('_').filter(d=>d).join(' ')} :
+          { d[1].map(d=>moment(d).format('YYYY')+' Q'+moment(d).format('Q')).join(' - ') }
+        </Button>
+      {/if}
+
     {:else}
       {#if d[1][0]!=$M.defaultState[d[0]][0] || d[1][1]!=$M.defaultState[d[0]][1]}
         <Button class="bg-[#E485A5]"
@@ -388,6 +425,16 @@
             "4R4B",
             "5R6B"
           ]}
+          {rows}
+          {tableRows}/>
+
+
+
+
+        <Panel_Beeswarms_Timeline
+          title={"Completion Date"}
+          key={'_completion_date'}
+          xAxisLabel={"Date"}
           {rows}
           {tableRows}/>
 

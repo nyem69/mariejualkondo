@@ -29,7 +29,7 @@
   const beeheight = 250;
   const margin = {
           top: 0,
-          right: 0,
+          right: 20,
           bottom: 20,
           left: 40
         };
@@ -188,10 +188,9 @@
 
 
 
-<div class="Panel_Rooms[{key}] flex-1 mt-1" style="min-width:400px; max-heigth:300px;">
+<div class="Panel_Rooms[{key}] flex-1 mt-4 mb-4" style="min-width:400px; max-heigth:300px;">
   <div class="flex">
     <div class="flex-1 font-semibold text-sm text-left pl-8">{title}</div>
-    <div class="flex text-xs text-right">{filteredRooms.join(', ')}</div>
   </div>
   <svg class="w-full" bind:this={el} viewBox="0 0 {beewidth+margin.left+margin.right} {beeheight+margin.top+margin.bottom}">
 
@@ -209,6 +208,10 @@
       </g>
 
   </svg>
+  <div class="flex">
+    <div class="flex text-xs text-center">{filteredRooms.join(', ')}</div>
+  </div>
+
 </div>
 
 
