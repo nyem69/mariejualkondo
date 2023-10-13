@@ -316,16 +316,16 @@
 
 
 <style>
-  body {
-      font-family:'B612','Roboto Mono',-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
-  }
 
   p {
     padding:3px;
   }
 </style>
 
-<div class="m-4 md:m-8 lg:m-12 xl:m-16" style="min-height:3000px">
+<div class="sm:m-0 md:m-8 lg:m-12 xl:m-16 w-full" style="min-height:3000px">
+
+    <div class="m-4">
+
     <h1 class="font-semibold text-3xl mb-4">Klang Valley Residential Property Overview</h1>
 
     <div class="flex flex-wrap">
@@ -350,6 +350,7 @@
 
 
     </div>
+  </div>
 
   <!--
     filters
@@ -433,7 +434,7 @@
       <!--
         table listing
       -->
-      <div class="w-full max-h-[70vh] overflow-x-hidden">
+      <div class="w-full max-h-[70vh] sm:overflow-x-hidden">
         <Panel_Table {tableRows}/>
       </div>
 

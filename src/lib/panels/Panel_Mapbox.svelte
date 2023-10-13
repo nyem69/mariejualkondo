@@ -253,4 +253,4 @@
 </svelte:head>
 
 <!-- <div id="map" class="relative w-full aspect-[9/16] max-h-[70vh] sm:max-h-full sm:aspect-video"></div> -->
-<div id="map" class="flex-1 w-full min-h-[50vh] max-h-[70vh]"></div>
+<div id="map" class="flex-1 w-full min-w-[700px] min-h-[50vh] max-h-[70vh]"></div>

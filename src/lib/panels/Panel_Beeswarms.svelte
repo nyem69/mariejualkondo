@@ -159,11 +159,11 @@
 
 
 <!-- <div class="Panel_Beeswarms[{key}] flex-1 mt-4 mb-4" style="min-width:400px; max-heigth:300px;"> -->
-<div class="Panel_Beeswarms[{key}] flex-1 min-w-[300px] sm:w-full mb-8">
+<div class="Panel_Beeswarms[{key}] flex-1 min-w-[350px] w-full mb-8">
   <div class="flex">
     <div class="flex-1 font-semibold text-sm text-left pl-8">{title}</div>
   </div>
-  <svg class="w-full" bind:this={el} viewBox="0 0 {beewidth+margin.left+margin.right} {beeheight+margin.top+margin.bottom}">
+  <svg class="w-full" width="100%" bind:this={el} viewBox="0 0 {beewidth+margin.left+margin.right} {beeheight+margin.top+margin.bottom}">
 
       <g class="x-axis" transform="translate(0, {margin.top})" pointer-events="none"></g>
 
