@@ -322,7 +322,9 @@
   }
 </style>
 
-<div class="sm:m-0 md:m-8 lg:m-12 xl:m-16 w-full" style="min-height:3000px">
+
+
+<div class="md:m-8 lg:m-12 xl:m-16 w-full" style="min-height:3000px">
 
     <div class="m-4">
 
@@ -418,13 +420,13 @@
 
 
 
-      <div>
+      <div class="mb-4">
         <div class="flex">
           <div class="flex-1 font-semibold text-sm text-left pl-8">Location Map</div>
         </div>
         <!-- <Panel_Maplibre {data}/> -->
         <Panel_Mapbox {tableRows} {klcc} {geojson_klcc}/>
-        <div class="text-xs mt-2 mb-4">The map displays approximate locations of selected residential housing projects currently under development. Please note that the positions are estimated and for reference purposes only. Actual locations may vary</div>
+        <div class="text-xs mt-2">The map displays approximate locations of selected residential housing projects currently under development. Please note that the positions are estimated and for reference purposes only. Actual locations may vary</div>
       </div>
 
 
@@ -434,7 +436,7 @@
       <!--
         table listing
       -->
-      <div class="w-full max-h-[70vh] sm:overflow-x-hidden">
+      <div class="max-w-md max-h-[70vh] sm:overflow-x-hidden">
         <Panel_Table {tableRows}/>
       </div>
 
@@ -448,7 +450,7 @@
     -->
     <div class="flex-1">
 
-      <div class="flex justify-center items-stretch flex-wrap" style="flex-wrap:wrap;">
+      <div class="flex justify-center items-start flex-wrap" style="flex-wrap:wrap;">
 
           <Panel_Beeswarms
             title={"Distance from KLCC"}
