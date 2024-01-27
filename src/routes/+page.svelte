@@ -358,35 +358,35 @@
 
 
 
-<div class="md:m-8 lg:m-12 xl:m-16 w-full min-w-md" style="min-height:3000px">
+<div class="m-4" style="min-height:3000px">
 
-    <div class="m-4">
+    <div class="">
 
-    <h1 class="font-semibold text-3xl mb-4">Klang Valley Residential Property Overview</h1>
+        <h1 class="font-semibold text-3xl mb-4">Klang Valley Residential Property Overview</h1>
 
-    <div class="flex flex-wrap">
+        <div class="flex flex-wrap">
+            <div class="flex-1">
 
-      <div class="flex-1">
+                <p>
+                    Dive into an in-depth analysis of residential properties currently on sale in Klang Valley.
+                </p>
+                <p>
+                    This multifaceted visualization spans from pinpointing geographical locations on the Location Map to various pricing metrics. The <span id="beeswarm_plot" class="underline text-[#4285F4]">beeswarm plots</span> elucidate factors such as distance from KLCC, pricing patterns, square footage, and number of rooms. Additionally, an anticipated completion date offers foresight into the project finalization timeline.
+                </p>
+                <p>
+                    Leveraging this tool, both potential buyers and real estate aficionados can grasp Klang Valley's property market landscape, fostering informed decisions and foresight about prevailing and imminent trends.
+                </p>
 
-        <p>
-            Dive into an in-depth analysis of residential properties currently on sale in Klang Valley.
-        </p>
-        <p>
-            This multifaceted visualization spans from pinpointing geographical locations on the Location Map to various pricing metrics. The <span id="beeswarm_plot" class="underline text-[#4285F4]">beeswarm plots</span> elucidate factors such as distance from KLCC, pricing patterns, square footage, and number of rooms. Additionally, an anticipated completion date offers foresight into the project finalization timeline.
-        </p>
-        <p>
-            Leveraging this tool, both potential buyers and real estate aficionados can grasp Klang Valley's property market landscape, fostering informed decisions and foresight about prevailing and imminent trends.
-        </p>
+                <p>
+                    Data source : <a class="underline text-[#4285F4]"
+                        href="https://twitter.com/natashagideon/status/1711657563388035117" target="_blank">MarieJualKondo</a>.
+                </p>
 
-        <p>
-          Data source : <a class="underline text-[#4285F4]" href="https://twitter.com/natashagideon?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1711657563388035117%7Ctwgr%5Ef03ef67400a9fdb9b3b63ca16c89128eec6ee6cf%7Ctwcon%5Es1_&ref_url=http%3A%2F%2Flocalhost%3A5173%2F" target="_blank">MarieJualKondo</a>.
-        </p>
-
-      </div>
+            </div>
 
 
+        </div>
     </div>
-  </div>
 
   <!--
     filters

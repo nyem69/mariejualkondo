@@ -7,7 +7,7 @@
 </script>
 
 
-<main class="text-slate-700 m-auto">
+<main class="text-slate-700">
 	<slot />
 </main>
 
